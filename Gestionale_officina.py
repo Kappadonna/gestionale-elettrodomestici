@@ -198,8 +198,50 @@ class TicketRiparazione:
         self.__note = self.__note.append(nuove_note)
     
     
-
+class Officina:
     
+    def __init__(self, nome, tickets = None):
+        self.nome = nome
+        self.tickets = tickets if tickets is not None else []
+        
+    def aggiungi_ticket(self, ticket):
+        self.tickets.append(ticket)   
+    
+    def chiudi_ticket(self, ticket):
+        ticket.set_stato("chiuso")
+    
+    def stampa_ticket_aperti(self):
+        for t in self.tickets:
+            if t.get_stato() == "aperto":
+                print(f"ID: {t.get_id()}, Tipo elettrodomestico: {t.get_elettrodomestico().__class__name}, Stato: {t.get_stato()}")
+                return True
+    
+    def totale_preventivi(self):
+        tot = 0
+        for t in self.tickets:
+            tot += t.calcola_preventivo()
+        print(f"Il totale dei preventivi è di {tot}")
+        return tot
+    
+    def statistiche_per_tupo(self):
+        n_lavatrici = 0
+        n_frigoriferi = 0
+        n_forni = 0
+        
+        for t in self._tickets:
+            if t.isinstance(t.get_elettrodomestico(), Lavatrice):
+                n_lavatrici += 1
+            elif t.isinstance(t.get_elettrodomestico(), Frigorifero):
+                n_frigoriferi += 1
+            elif t.isinstance(t.get_elettrodomestico(), Forno):
+                n_forni += 1
+                
+        print(f"Numero di lavatrici in riparazione: {n_lavatrici}")
+        print(f"Numero di frigoriferi in lavorazione: {n_frigoriferi}")
+        print(f"Numero di forni in lavorazione: {self.forni}")
+        
+        
+        
    
 
 t1 = TicketRiparazione(f1)
