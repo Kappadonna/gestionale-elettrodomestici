@@ -80,6 +80,13 @@ class Frigorifero(Elettrodomestico):
             return costo_base + 10 + (30 if self.ha_freezer else 0)
         else:
             return costo_base + (30 if self.ha_freezer else 0)
+    
+    def descrizione(self):
+        return (
+            super().descrizione() +
+            f" | Capacità: {self.litri} l"
+            f" | Freezer: {"V" if self.ha_freezer else "X"}"
+        )
 
 
 class Forno(Elettrodomestico):
