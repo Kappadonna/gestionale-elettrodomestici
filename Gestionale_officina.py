@@ -15,8 +15,13 @@ class Elettrodomestico(ABC):
     
     # metodo concreto per ritorna descrizione
     def descrizione(self):
-        return f"{self.get_marca()}, {self.get_modello()} è un {type(Elettrodomestico)} del {self.get_anno_acquisto()}, ha un guasto{self.get_guasto()}"
-     
+        return (
+        f" | Classe: {type(self)}"
+        f" | Marca: {self.get_marca()}" +
+        f" | Modello:{self.get_modello()}" +
+        f" | Anno d'acquisto: {self.get_anno_acquisto()}" +
+        f" | Guasto: {self.get_guasto()}"
+        )
 
     def stima_costo_base(self):
         return 50
@@ -71,10 +76,19 @@ class Forno(Elettrodomestico):
                 return super().stima_costo_base() + 20
             else:
                 return super().stima_costo_base() + 10
+            
+    def descrizione(self):
+        return (
+            super().descrizione() +
+            f" | Tipo alimentazione: {self.tipo_alimentazione}"
+            f" | Ventilato: {self.ha_ventilato}"
+        )
                 
     
 f1 = Forno("samsung", "ab1", "2024", "resistenza", "elettrico", True)
-        
+
+print(f1.descrizione())
+"""
 f2 = Forno("turi", "cd2", "2021", "resistenza", "elettrico", False)
 
 f3 = Forno("cico", "ef3", "2025", "resistenza", "gas", True)
@@ -98,4 +112,92 @@ print(f2.get_modello())
 
 print(f3.get_anno_acquisto())
 
-print(f4.get_guasto())
+print(f4.get_guasto()) """
+
+""" class Frigorifero(Elettrodomestico):
+    
+    def __init__(self, marca: str, modello:str, anno_acquisto:int, guasto:str, litri:int, ha_freezer:bool):
+        super().__init__(marca, modello, anno_acquisto, guasto)
+        self.litri = litri
+        self.ha_freezer = ha_freezer
+
+    def stima_costo_base(self):
+        costo_base = super().stima_costo_base()
+
+        if self.litri > 50:
+            return costo_base + 30 + (30 if self.ha_freezer else 0)
+        elif self.litri > 25:
+            return costo_base + 10 + (30 if self.ha_freezer else 0)
+        else:
+            return costo_base + (30 if self.ha_freezer else 0)
+
+
+
+
+
+
+class Lavatrice(Elettrodomestico): 
+    
+    soglia_capacità_alta = 8
+    
+    # costruttore: richiama super() per gli attributi comuni, aggiunge quelli specifici
+    def __init__(self, marca: str, modello: str, anno_acquisto: int, guasto: str,
+                 capacita_kg: int, giri_centrifuga: int):
+        
+        # chiama il costruttore di Elettrodomestico per marca, modello, anno, guasto
+        super().__init__(marca, modello, anno_acquisto, guasto)
+        
+        # attributi privati specifici della lavatrice 
+        self.__capacita_kg = capacita_kg
+        self.__giri_centrifuga = giri_centrifuga
+
+    # getter
+    def get_capacita_kg(self):
+        return self.__capacita_kg
+
+    def get_giri_centrifuga(self):
+        return self.__giri_centrifuga
+
+    # setter
+    def set_capacita_kg(self, capacita_kg):
+        self.__capacita_kg = capacita_kg
+
+    def set_giri_centrifuga(self, giri):
+        self.__giri_centrifuga = giri
+
+    # override di stima_costo_base
+    
+    def stima_costo_base(self):
+        costo = 60.0
+    
+        if self.__capacita_kg > self.soglia_capacità_alta:
+            costo += 20.0
+        return costo
+
+    
+    def descrizione(self):
+        return (
+            super().descrizione() +
+            f" | Capacità: {self.__capacita_kg} kg"
+            f" | Centrifuga: {self.__giri_centrifuga} giri/min"
+        ) """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
