@@ -88,33 +88,18 @@ class Forno(Elettrodomestico):
 f1 = Forno("samsung", "ab1", "2024", "resistenza", "elettrico", True)
 
 print(f1.descrizione())
-"""
+
+
+
 f2 = Forno("turi", "cd2", "2021", "resistenza", "elettrico", False)
 
 f3 = Forno("cico", "ef3", "2025", "resistenza", "gas", True)
 
 f4 = Forno("canon", "ab1", "2027", "sportello", "gas", False)
 
-# Test metodo stima costo base
-print(f1.stima_costo_base())
 
-print(f2.stima_costo_base())
 
-print(f3.stima_costo_base())
-
-print(f4.stima_costo_base())
-
-# Test getter
-
-print(f1.get_marca())
-
-print(f2.get_modello())
-
-print(f3.get_anno_acquisto())
-
-print(f4.get_guasto()) """
-
-""" class Frigorifero(Elettrodomestico):
+class Frigorifero(Elettrodomestico):
     
     def __init__(self, marca: str, modello:str, anno_acquisto:int, guasto:str, litri:int, ha_freezer:bool):
         super().__init__(marca, modello, anno_acquisto, guasto)
@@ -130,64 +115,110 @@ print(f4.get_guasto()) """
             return costo_base + 10 + (30 if self.ha_freezer else 0)
         else:
             return costo_base + (30 if self.ha_freezer else 0)
-
-
-
-
-
-
-class Lavatrice(Elettrodomestico): 
-    
-    soglia_capacità_alta = 8
-    
-    # costruttore: richiama super() per gli attributi comuni, aggiunge quelli specifici
-    def __init__(self, marca: str, modello: str, anno_acquisto: int, guasto: str,
-                 capacita_kg: int, giri_centrifuga: int):
-        
-        # chiama il costruttore di Elettrodomestico per marca, modello, anno, guasto
-        super().__init__(marca, modello, anno_acquisto, guasto)
-        
-        # attributi privati specifici della lavatrice 
-        self.__capacita_kg = capacita_kg
-        self.__giri_centrifuga = giri_centrifuga
-
-    # getter
-    def get_capacita_kg(self):
-        return self.__capacita_kg
-
-    def get_giri_centrifuga(self):
-        return self.__giri_centrifuga
-
-    # setter
-    def set_capacita_kg(self, capacita_kg):
-        self.__capacita_kg = capacita_kg
-
-    def set_giri_centrifuga(self, giri):
-        self.__giri_centrifuga = giri
-
-    # override di stima_costo_base
-    
-    def stima_costo_base(self):
-        costo = 60.0
-    
-        if self.__capacita_kg > self.soglia_capacità_alta:
-            costo += 20.0
-        return costo
-
     
     def descrizione(self):
         return (
             super().descrizione() +
-            f" | Capacità: {self.__capacita_kg} kg"
-            f" | Centrifuga: {self.__giri_centrifuga} giri/min"
-        ) """
+            f" | Capacità: {self.litri} l"
+            f" | Freezer: {'V' if self.ha_freezer else 'X'}"
+        )
 
+class Lavatrice(Elettrodomestico): 
+    
+    soglia_capacita_alta = 8
+    
+    def __init__(self, marca: str, modello: str, anno_acquisto: int, guasto: str,
+                 capacita_kg: int, giri_centrifuga: int):
+        
+        super().__init__(marca, modello, anno_acquisto, guasto)
+        
+        # attributi pubblici, niente __ davanti
+        self.capacita_kg = capacita_kg
+        self.giri_centrifuga = giri_centrifuga
 
+    def stima_costo_base(self):
+        costo = super().stima_costo_base()
+        if self.capacita_kg > self.soglia_capacita_alta:  # self.capacita_kg, non self.__capacita_kg
+            costo += 20.0
+        return costo
 
+    def descrizione(self):
+        return (
+            super().descrizione() +
+            f" | Capacità: {self.capacita_kg} kg"           # stesso
+            f" | Centrifuga: {self.giri_centrifuga} giri/min"  # stesso
+        )
+    
+    
 
+class TicketRiparazione:
+    
+    ID_TICKET = 0
+    
+    def __init__(self, elettrodomestico: Elettrodomestico, stato = None, note = None):
+        TicketRiparazione.ID_TICKET +=1
+        self.__id_ticket = TicketRiparazione.ID_TICKET
+        self.__elettrodomestico = elettrodomestico
+        self.__stato = stato if stato is not None  else "aperto"
+        self.__note = note if note is not None else []
+        
+    def calcola_preventivo(self, extra1 = None, extra2 = None):
+        if extra1 == "commissioni" and extra2 == "iva":
+            costo = self.get_elettrodomestico().stima_costo_base() + 10
+            print("Commissioni di €10 applicate + iva al 22%")
+            return costo * 1.22
+        elif extra1 == "commissioni": 
+            costo = self.get_elettrodomestico().stima_costo_base() + 10
+            print("Commissioni di €10 applicate")
+            return costo
+        else:
+            print("Nessun extra addebbitato")
+            return self.get_elettrodomestico().stima_costo_base()
+        
+        
+    # Metodi getter
+    
+    def get_id(self):
+        return self.__id_ticket
+    
+    def get_elettrodomestico(self):
+        return self.__elettrodomestico
+    
+    def get_stato(self):
+        return self.__stato
+    
+    def get_note(self):
+        return self.__note
+    
+    # Metodi setter
+    def set_stato(self, nuovo_stato):
+        self.__stato = nuovo_stato
+        
+    def aggiungi_note(self, nuove_note : str):
+        self.__note = self.__note.append(nuove_note)
+    
+    
 
+    
+   
 
+t1 = TicketRiparazione(f1)
+t2 = TicketRiparazione(f1)
 
+print(t1.get_id())
+print(t1.get_stato())
+print(t1.get_note())
+
+print(t2.get_id())
+print(t2.get_stato())
+print(t2.get_note())
+
+print(t1.calcola_preventivo("commissioni"))
+print(t1.calcola_preventivo("commissioni", "iva"))
+print(t1.calcola_preventivo())      
+        
+    
+    
 
 
 
